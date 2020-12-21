@@ -22,7 +22,7 @@ pod 'TFThirdLib_iOS'
 
 ## Author
 
-SunXiaofei, sunxiaofei@sanshaoxingqiu.cn
+daniel.xiaofei@gmail.com
 
 ## License
 
