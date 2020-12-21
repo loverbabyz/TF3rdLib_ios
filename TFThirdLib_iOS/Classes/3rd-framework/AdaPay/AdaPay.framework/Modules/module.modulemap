@@ -1,0 +1,6 @@
+framework module AdaPay {
+  umbrella header "AdaPay.h"
+
+  export *
+  module * { export * }
+}
