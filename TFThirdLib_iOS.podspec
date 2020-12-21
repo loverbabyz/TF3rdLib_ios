@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-  3rd lib for Treasure framework.
+  3rd lib for Treasure framework. 
                        DESC
 
   s.homepage         = 'https://github.com/loverbabyz/TF3rdLib_ios'
