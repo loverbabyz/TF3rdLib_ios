@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TFThirdLib_iOS'
-  s.version          = '1.0.0'
+  s.version          = '1.0.1'
   s.summary          = '3rd lib for Treasure framework.'
 
 # This description is used to generate tags and improve search results.
@@ -54,11 +54,11 @@ Pod::Spec.new do |s|
   # 微信
   s.subspec 'WeChat' do |ss|
   ss.platform = :ios
-  ss.frameworks = "AudioToolbox", "CoreAudio", "MediaPlayer", "AVFoundation", "Security", "QuartzCore"
+  ss.frameworks = "WebKit", "AudioToolbox", "CoreAudio", "MediaPlayer", "AVFoundation", "Security", "QuartzCore"
   ss.libraries = "stdc++", "sqlite3", "z", "c++"
   ss.source_files = 'TFThirdLib_iOS/Classes/WeChat/*.{h,m}'
   ss.public_header_files = 'TFThirdLib_iOS/Classes/WeChat/*.h'
-  ss.dependency 'WechatOpenSDK', '1.8.7.1'
+  ss.vendored_libraries = "TFThirdLib_iOS/Classes/3rd-framework/WeChat/OpenSDK/*.{a}"
   end
   
   # 微信分享
