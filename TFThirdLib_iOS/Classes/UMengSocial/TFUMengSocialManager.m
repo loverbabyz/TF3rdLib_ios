@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 #import "Aspects.h"
+#import "TFThirdLib.h"
 
 #import <UMCommon/UMCommon.h>
 
@@ -26,7 +27,7 @@
 }
 
 + (void)trackAppDelegate {
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application:didFinishLaunchingWithOptions:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application,id launchOptions){

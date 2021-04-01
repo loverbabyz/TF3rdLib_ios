@@ -10,6 +10,7 @@
 #import "TFWxManager.h"
 #import "Aspects.h"
 #import <objc/runtime.h>
+#import "TFThirdLib.h"
 
 #import "WXApi.h"
 #import "WXApiObject.h"
@@ -48,7 +49,7 @@ static const void *TFWxManagerAuthCodeCallbackBlockKey  = &TFWxManagerAuthCodeCa
 }
 
 + (void)checkAppDelegate {
-    Class cls = NSClassFromString([TFWxManager appDelegateClassString]);
+    Class cls = NSClassFromString([TFThirdLib appDelegateClassString]);
     
     SEL cmd1 = @selector(application:handleOpenURL:);
     SEL cmd2 = @selector(application:openURL:sourceApplication:annotation:);
@@ -73,19 +74,8 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
     return YES;
 }
 
-/// 获取AppDelegate的类名
-+ (NSString *)appDelegateClassString {
-    if (NSClassFromString(@"AppDelegate")) {
-        /// obj-c
-        return @"AppDelegate";
-    } else {
-        /// swift
-        return [NSString stringWithFormat:@"%@.%@", NSBundle.mainBundle.infoDictionary[@"CFBundleExecutable"], @"AppDelegate"];;
-    }
-}
-
 + (void)trackAppDelegate {
-    [NSClassFromString([TFWxManager appDelegateClassString])
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application:didFinishLaunchingWithOptions:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application,id launchOptions){
@@ -125,7 +115,7 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
      }
      error:NULL];
     
-    [NSClassFromString([TFWxManager appDelegateClassString])
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application:handleOpenURL:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application, id url){
@@ -136,7 +126,7 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
      }
      error:NULL];
     
-    [NSClassFromString([TFWxManager appDelegateClassString])
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application:openURL:sourceApplication:annotation:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application, id url, id sourceApplication, id annotation){
@@ -148,7 +138,7 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
      error:NULL];
     
     /// NOTE: 9.0以后使用新API接口
-    [NSClassFromString([TFWxManager appDelegateClassString])
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application:openURL:options:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application, id url, id options) {
@@ -158,7 +148,7 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
     }
      error:NULL];
     
-    [NSClassFromString([TFWxManager appDelegateClassString])
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application:continueUserActivity:restorationHandler:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application, id userActivity, id restorationHandler) {

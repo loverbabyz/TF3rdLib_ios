@@ -11,6 +11,7 @@
 #import <objc/runtime.h>
 #import "JPUSHService.h"
 #import "Aspects.h"
+#import "TFThirdLib.h"
 
 @implementation TFJPushManager
 
@@ -102,9 +103,7 @@ typedef void (^CompletionHandlerBlock)(UIBackgroundFetchResult result);
 
 - (void)checkAppDelegate
 {
-    id applictionDelegate = [UIApplication sharedApplication].delegate;
-    
-    Class cls=NSClassFromString(@"AppDelegate");
+    Class cls=NSClassFromString([TFThirdLib appDelegateClassString]);
     
     SEL cmd1 = @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:);
     SEL cmd2 = @selector(application:didReceiveRemoteNotification:);
@@ -157,7 +156,7 @@ void dynamicMethod4_tfjpush(id _self, SEL cmd,UIApplication *application)
 
 - (void)trackAppDelegate
 {
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application:didFinishLaunchingWithOptions:)
      withOptions:AspectPositionAfter
      usingBlock:^(id<AspectInfo> aspectInfo, id application,id launchOptions){
@@ -189,7 +188,7 @@ void dynamicMethod4_tfjpush(id _self, SEL cmd,UIApplication *application)
      }
      error:NULL];
     
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application:didRegisterForRemoteNotificationsWithDeviceToken:)
      withOptions:AspectPositionAfter
      usingBlock:^(id<AspectInfo> aspectInfo, id application,id deviceToken){
@@ -198,7 +197,7 @@ void dynamicMethod4_tfjpush(id _self, SEL cmd,UIApplication *application)
      }
      error:NULL];
     
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application: didReceiveRemoteNotification:)
      withOptions:AspectPositionAfter
      usingBlock:^(id<AspectInfo> aspectInfo, id application,id userInfo){
@@ -207,7 +206,7 @@ void dynamicMethod4_tfjpush(id _self, SEL cmd,UIApplication *application)
      }
      error:NULL];
     
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application:didReceiveRemoteNotification:fetchCompletionHandler:)
      withOptions:AspectPositionAfter
      usingBlock:^(id<AspectInfo> aspectInfo, id application,id userInfo,CompletionHandlerBlock completionHandler){
@@ -219,7 +218,7 @@ void dynamicMethod4_tfjpush(id _self, SEL cmd,UIApplication *application)
      }
      error:NULL];
     
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(applicationDidBecomeActive:)
      withOptions:AspectPositionAfter
      usingBlock:^(id<AspectInfo> aspectInfo, id application){
@@ -256,7 +255,7 @@ void dynamicMethod4_tfjpush(id _self, SEL cmd,UIApplication *application)
 
  */
 + (void)setAlias:(NSString*)alias
-         success:(void (^)())successBlock
+         success:(void (^)(void))successBlock
          failure:(void (^)(int errorCode, NSString* errorMessage))failureBlock
        autoRetry:(int)timesToRetry
    retryInterval:(int)intervalToWait
@@ -320,7 +319,7 @@ void dynamicMethod4_tfjpush(id _self, SEL cmd,UIApplication *application)
 }
 
 + (void)setAlias:(NSString*)alias
-         success:(void (^)())successBlock
+         success:(void (^)(void))successBlock
          failure:(void (^)(int errorCode, NSString* errorMessage))failureBlock
 {
     [self setAlias:alias success:successBlock failure:failureBlock autoRetry:0 retryInterval:0];

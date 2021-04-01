@@ -3,10 +3,12 @@
 platform :ios, '10.0'
 
 target 'TFThirdLib_iOS_Example' do
+  pod 'TFThirdLib_iOS/Adapay', :path => '../'
   pod 'TFThirdLib_iOS/WXShare', :path => '../'
-#  pod 'TFThirdLib_iOS/Adapay', :path => '../'
   pod 'TFThirdLib_iOS/Bugly', :path => '../'
   pod 'TFThirdLib_iOS/UMengSocial', :path => '../'
+#  pod 'TFThirdLib_iOS/JPush', :path => '../'
+#  pod 'TFThirdLib_iOS/AliPay', :path => '../'
 
   target 'TFThirdLib_iOS_Tests' do
     inherit! :search_paths

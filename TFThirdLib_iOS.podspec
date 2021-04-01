@@ -37,6 +37,13 @@ Pod::Spec.new do |s|
   s.frameworks = "Foundation", "UIKit", "CoreGraphics", "CoreText", "CoreTelephony", "Security", "ImageIO", "QuartzCore", "SystemConfiguration"
   s.static_framework = true
   
+  # core
+  s.subspec 'Core' do |ss|
+  ss.platform = :ios
+  ss.source_files = 'TFThirdLib_iOS/Classes/Core-ThirdLib/*.{h,m,mm}'
+  ss.public_header_files = 'TFThirdLib_iOS/Classes/Core-ThirdLib/*.h'
+  end
+
   # Ada支付
   s.subspec 'Adapay' do |ss|
   ss.platform = :ios
@@ -50,6 +57,7 @@ Pod::Spec.new do |s|
   ss.xcconfig = {
     'ENABLE_BITCODE' => 'NO'
     }
+  ss.dependency  'TFThirdLib_iOS/Core'
   end
   
   # 微信
@@ -60,6 +68,7 @@ Pod::Spec.new do |s|
   ss.source_files = 'TFThirdLib_iOS/Classes/WeChat/*.{h,m}'
   ss.public_header_files = 'TFThirdLib_iOS/Classes/WeChat/*.h'
   ss.vendored_libraries = "TFThirdLib_iOS/Classes/3rd-framework/WeChat/OpenSDK/*.{a}"
+  ss.dependency 'TFThirdLib_iOS/Core'
   end
   
   # 微信分享
@@ -78,6 +87,7 @@ Pod::Spec.new do |s|
   ss.source_files = 'TFThirdLib_iOS/Classes/Bugly/*.{h,m}'
   ss.public_header_files = 'TFThirdLib_iOS/Classes/Bugly/*.h'
   ss.dependency 'Bugly', '2.5.71'
+  ss.dependency 'TFThirdLib_iOS/Core'
   end
   
   # 友盟统计
@@ -87,7 +97,6 @@ Pod::Spec.new do |s|
   ss.source_files = 'TFThirdLib_iOS/Classes/UMengSocial/*.{h,m}'
   ss.public_header_files = 'TFThirdLib_iOS/Classes/UMengSocial/*.h'
   ss.vendored_frameworks = "TFThirdLib_iOS/Classes/3rd-framework/UMCommon/*.{framework}"
-#  ss.dependency 'UMCCommon'
   end
   
   # 极光推送
@@ -97,7 +106,7 @@ Pod::Spec.new do |s|
   ss.public_header_files = 'TFThirdLib_iOS/Classes/JPush/*.h'
   ss.libraries = "stdc++", "sqlite3"
   ss.vendored_libraries = "TFThirdLib_iOS/Classes/JPush/*.{a}"
-#  ss.vendored_frameworks = "TFThirdLib_iOS/Classes/JPush/*.{framework}"
+  ss.dependency  'TFThirdLib_iOS/Core'
   end
   
   # 支付宝支付
@@ -110,7 +119,7 @@ Pod::Spec.new do |s|
   ss.vendored_libraries = "TFThirdLib_iOS/Classes/AliPay/*.{a}"
   ss.vendored_frameworks = "TFThirdLib_iOS/Classes/AliPay/*.{framework}"
   ss.resources = "TFThirdLib_iOS/Classes/AliPay/*.{bundle}"
-#  ss.dependency  'TFThirdLib_iOS/OpenSSL'
+  ss.dependency  'TFThirdLib_iOS/Core'
 
     ss.subspec 'Util' do |sss|
     sss.platform = :ios

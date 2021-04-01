@@ -31,7 +31,7 @@
  *  @param intervalToWait 间隔时间
  */
 + (void)setAlias:(NSString*)alias
-         success:(void (^)())successBlock
+         success:(void (^)(void))successBlock
          failure:(void (^)(int errorCode, NSString* errorMessage))failureBlock
        autoRetry:(int)timesToRetry
         retryInterval:(int)intervalToWait;
@@ -45,7 +45,7 @@
  */
 
 + (void)setAlias:(NSString*)alias
-         success:(void (^)())successBlock
+         success:(void (^)(void))successBlock
          failure:(void (^)(int errorCode, NSString* errorMessage))failureBlock;
 
 /**

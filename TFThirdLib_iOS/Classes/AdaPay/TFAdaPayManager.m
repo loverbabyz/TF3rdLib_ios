@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 #import "Aspects.h"
+#import "TFThirdLib.h"
 
 #import <AdaPay/AdaPay.h>
 
@@ -31,7 +32,7 @@ static const void *TFAdaPayManagerCompletionBlockKey     = &TFAdaPayManagerCompl
 }
 
 + (void)checkAppDelegate {
-    Class cls=NSClassFromString(@"AppDelegate");
+    Class cls=NSClassFromString([TFThirdLib appDelegateClassString]);
     
     SEL cmd1 = @selector(application:handleOpenURL:);
     SEL cmd2 = @selector(application:openURL:sourceApplication:annotation:);

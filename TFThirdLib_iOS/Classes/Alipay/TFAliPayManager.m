@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 #import "Aspects.h"
+#import "TFThirdLib.h"
 
 #import <AlipaySDK/AlipaySDK.h>
 //#import "APAuthInfo.h"
@@ -118,7 +119,7 @@ static const void *TFAliPayManagerCancelBlockKey     = &TFAliPayManagerCancelBlo
 
 + (void)checkAppDelegate
 {
-    Class cls=NSClassFromString(@"AppDelegate");
+    Class cls=NSClassFromString([TFThirdLib appDelegateClassString]);
     
     SEL cmd1 = @selector(application:handleOpenURL:);
     SEL cmd2 = @selector(application:openURL:sourceApplication:annotation:);
@@ -149,7 +150,7 @@ BOOL dynamicMethod2_tfalipay(id _self, SEL cmd,UIApplication *application ,NSURL
 
 + (void)trackAppDelegate
 {
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application:handleOpenURL:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application, id url){
@@ -162,7 +163,7 @@ BOOL dynamicMethod2_tfalipay(id _self, SEL cmd,UIApplication *application ,NSURL
      }
      error:NULL];
     
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFThirdLib appDelegateClassString])
      aspect_hookSelector:@selector(application:openURL:sourceApplication:annotation:)
      withOptions:AspectPositionAfter
      usingBlock:^(id<AspectInfo> aspectInfo, id application, id url,id sourceApplication,id annotation){
