@@ -112,9 +112,9 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
         /// 必须放在DEBUG模式，否则每次都会跳转到微信
         if (result) {
             //调用自检函数之前必须要先注册
-            [WXApi checkUniversalLinkReady:^(WXULCheckStep step, WXCheckULStepResult* result) {
-                [[self class] log:[NSString stringWithFormat:@"%@, %u, %@, %@", @(step), result.success, result.errorInfo, result.suggestion]];
-            }];
+//            [WXApi checkUniversalLinkReady:^(WXULCheckStep step, WXCheckULStepResult* result) {
+//                [[self class] log:[NSString stringWithFormat:@"%@, %u, %@, %@", @(step), result.success, result.errorInfo, result.suggestion]];
+//            }];
         }
 #endif
      }
