@@ -130,25 +130,50 @@ enum TFWXScene {
 
 @end
 
+/*! @brief 第三方程序向微信终端请求认证的消息结构
+ *
+ * 第三方程序要向微信申请认证，并请求某些权限，需要调用WXApi的sendReq成员函数，
+ * 向微信终端发送一个SendAuthReq消息结构。微信终端处理完后会向第三方程序发送一个处理结果。
+ * @see SendAuthResp
+ */
+@interface TFWxAuthReq : NSObject
+
+/** 第三方程序要向微信申请认证，并请求某些权限，需要调用WXApi的sendReq成员函数，向微信终端发送一个SendAuthReq消息结构。微信终端处理完后会向第三方程序发送一个处理结果。
+ * @see SendAuthResp
+ * @note scope字符串长度不能超过1K
+ */
+@property (nonatomic, copy) NSString *scope;
+/** 第三方程序本身用来标识其请求的唯一性，最后跳转回第三方程序时，由微信终端回传。
+ * @note state字符串长度不能超过1K
+ */
+@property (nonatomic, copy) NSString *state;
+
+@end
+
 /**
  *  微信支付管理类
  */
 @interface TFWxManager : NSObject
 
 /**
- * 支付成功回调
+ * 成功回调
  */
 typedef void (^TFWxManagerSuccessBlock) (void);
 
 /**
- * 支付失败回调
+ * 失败回调
  */
 typedef void (^TFWxManagerFailureBlock) (int errorCode, NSString *errorMessage);
 
 /**
- * 取消支付回调
+ * 取消回调
  */
 typedef void (^TFWxManagerCancelBlock) (void);
+
+/**
+ * 授权回调
+ */
+typedef void (^TFWxManagerAuthCodeCallbackBlock) (NSString *code);
 
 + (instancetype)sharedManager;
 
@@ -207,30 +232,40 @@ typedef void (^TFWxManagerCancelBlock) (void);
  *
  * @return 微信已安装返回YES，未安装返回NO。
  */
-+(BOOL) isWXAppInstalled;
++(BOOL)isWXAppInstalled;
 
 /*! @brief 判断当前微信的版本是否支持OpenApi
  *
  * @return 支持返回YES，不支持返回NO。
  */
-+(BOOL) isWXAppSupportApi;
++(BOOL)isWXAppSupportApi;
 
 /*! @brief 获取微信的itunes安装地址
  *
  * @return 微信的安装地址字符串。
  */
-+(NSString *) getWXAppInstallUrl;
++(NSString *)getWXAppInstallUrl;
 
 /*! @brief 获取当前微信SDK的版本号
  *
  * @return 返回当前微信SDK的版本号
  */
-+(NSString *) getApiVersion;
++(NSString *)getApiVersion;
 
 /*! @brief 打开微信
  *
  * @return 成功返回YES，失败返回NO。
  */
-+(BOOL) openWXApp;
++(BOOL)openWXApp;
+
+/// 发送权限申请
+/// @param req req
+/// @param successBlock 成功回调
+/// @param failureBlock 失败回调
+/// @param cancelBlock 取消回调
++ (void)sendAuthReq:(TFWxAuthReq *)req
+            success:(TFWxManagerAuthCodeCallbackBlock)successBlock
+            failure:(TFWxManagerFailureBlock)failureBlock
+             cancel:(TFWxManagerCancelBlock)cancelBlock;
 
 @end

@@ -26,14 +26,19 @@
 
 @end
 
+@implementation TFWxAuthReq
+
+@end
+
 @interface TFWxManager()<WXApiDelegate>
 
 @end
 @implementation TFWxManager
 
-static const void *TFWxManagerSuccessBlockKey       = &TFWxManagerSuccessBlockKey;
-static const void *TFWxManagerFailureBlockKey       = &TFWxManagerFailureBlockKey;
-static const void *TFWxManagerCancelBlockKey        = &TFWxManagerCancelBlockKey;
+static const void *TFWxManagerSuccessBlockKey           = &TFWxManagerSuccessBlockKey;
+static const void *TFWxManagerFailureBlockKey           = &TFWxManagerFailureBlockKey;
+static const void *TFWxManagerCancelBlockKey            = &TFWxManagerCancelBlockKey;
+static const void *TFWxManagerAuthCodeCallbackBlockKey  = &TFWxManagerAuthCodeCallbackBlockKey;
 
 + (void)load {
     [super load];
@@ -231,6 +236,13 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
         PayResp *payResp = (PayResp *)resp;
         
         NSLog(@"%@", payResp);
+    } else if([resp isKindOfClass:[SendAuthResp class]]) {
+        SendAuthResp *sendAuthResp = (SendAuthResp *)resp;
+        TFWxManagerAuthCodeCallbackBlock block = self.authCodeCallbackBlockBlock;
+        if (block) {
+            block(sendAuthResp.code);
+        }
+        NSLog(@"%@", sendAuthResp);
     }
 }
 
@@ -292,6 +304,13 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 
 + (BOOL)registerApp {
     return [[[self class] sharedManager] registerApp];
+}
+
++ (void)sendAuthReq:(TFWxAuthReq *)req
+            success:(TFWxManagerAuthCodeCallbackBlock)successBlock
+            failure:(TFWxManagerFailureBlock)failureBlock
+             cancel:(TFWxManagerCancelBlock)cancelBlock {
+    [[[self class] sharedManager] sendAuthReq:req success:successBlock failure:failureBlock cancel:cancelBlock];
 }
 
 - (void)pay:(TFWxPayReq*)data
@@ -471,6 +490,24 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
     return [WXApi registerApp:[[self class] _wxappid] universalLink:[[self class] _universalLink]];
 }
 
+- (void)sendAuthReq:(TFWxAuthReq *)req
+            success:(TFWxManagerAuthCodeCallbackBlock)successBlock
+            failure:(TFWxManagerFailureBlock)failureBlock
+             cancel:(TFWxManagerCancelBlock)cancelBlock {
+    
+    [self setAuthCodeCallbackBlockBlock:successBlock];
+    [self setFailureBlock:failureBlock];
+    [self setCancelBlock:cancelBlock];
+    
+    SendAuthReq *sendAuthReq = [[SendAuthReq alloc] init];
+    sendAuthReq.scope = req.scope;
+    sendAuthReq.state = req.state;
+    
+    [WXApi sendReq:sendAuthReq completion:^(BOOL success) {
+            
+    }];
+}
+
 #pragma mark- Block setting/getting methods
 
 - (void)setSuccessBlock:(TFWxManagerSuccessBlock)block {
@@ -495,6 +532,14 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 
 - (TFWxManagerCancelBlock)cancelBlock {
     return objc_getAssociatedObject(self, TFWxManagerCancelBlockKey);
+}
+
+- (void)setAuthCodeCallbackBlockBlock:(TFWxManagerAuthCodeCallbackBlock)block {
+    objc_setAssociatedObject(self, TFWxManagerAuthCodeCallbackBlockKey, block, OBJC_ASSOCIATION_COPY);
+}
+
+- (TFWxManagerAuthCodeCallbackBlock)authCodeCallbackBlockBlock {
+    return objc_getAssociatedObject(self, TFWxManagerAuthCodeCallbackBlockKey);
 }
 
 #pragma mark - other
