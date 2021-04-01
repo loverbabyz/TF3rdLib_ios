@@ -35,6 +35,7 @@ Pod::Spec.new do |s|
   s.public_header_files = 'TFThirdLib_iOS/Classes/TFThirdLib_iOS.h'
 
   s.frameworks = "Foundation", "UIKit", "CoreGraphics", "CoreText", "CoreTelephony", "Security", "ImageIO", "QuartzCore", "SystemConfiguration"
+  s.static_framework = true
   
   # Ada支付
   s.subspec 'Adapay' do |ss|

@@ -43,7 +43,7 @@ static const void *TFWxManagerCancelBlockKey        = &TFWxManagerCancelBlockKey
 }
 
 + (void)checkAppDelegate {
-    Class cls=NSClassFromString(@"AppDelegate");
+    Class cls = NSClassFromString([TFWxManager appDelegateClassString]);
     
     SEL cmd1 = @selector(application:handleOpenURL:);
     SEL cmd2 = @selector(application:openURL:sourceApplication:annotation:);
@@ -68,25 +68,40 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
     return YES;
 }
 
+/// 获取AppDelegate的类名
++ (NSString *)appDelegateClassString {
+    if (NSClassFromString(@"AppDelegate")) {
+        /// obj-c
+        return @"AppDelegate";
+    } else {
+        /// swift
+        return [NSString stringWithFormat:@"%@.%@", NSBundle.mainBundle.infoDictionary[@"CFBundleExecutable"], @"AppDelegate"];;
+    }
+}
+
 + (void)trackAppDelegate {
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFWxManager appDelegateClassString])
      aspect_hookSelector:@selector(application:didFinishLaunchingWithOptions:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application,id launchOptions){
          /// Required
         NSString *appid = [[self class] _wxappid];
         if (appid == nil || [appid length] <= 0) {
+            [[self class] log:@"APP_ID未配置"];
+            
             return;
         }
         
         NSString *universalLink = [[self class] _universalLink];
         if (universalLink == nil || [universalLink length] <= 0) {
+            [[self class] log:@"UNIVERSAL_LINK未配置"];
+            
             return;
         }
 #if DEBUG
         //在register之前打开log, 后续可以根据log排查问题
         [WXApi startLogByLevel:WXLogLevelDetail logBlock:^(NSString *log) {
-            NSLog(@"WeChatSDK: %@", log);
+            [[self class] log:[NSString stringWithFormat:@"WeChatSDK: %@", log]];
         }];
 #endif
         BOOL result = NO;
@@ -98,44 +113,47 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
         if (result) {
             //调用自检函数之前必须要先注册
             [WXApi checkUniversalLinkReady:^(WXULCheckStep step, WXCheckULStepResult* result) {
-                NSLog(@"%@, %u, %@, %@", @(step), result.success, result.errorInfo, result.suggestion);
+                [[self class] log:[NSString stringWithFormat:@"%@, %u, %@, %@", @(step), result.success, result.errorInfo, result.suggestion]];
             }];
         }
 #endif
      }
      error:NULL];
     
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFWxManager appDelegateClassString])
      aspect_hookSelector:@selector(application:handleOpenURL:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application, id url){
-        NSLog(@"application:handleOpenURL:===%@", url);
+        [[self class] log:[NSString stringWithFormat:@"application:handleOpenURL:===%@", url]];
+        
          // Required
         return [WXApi handleOpenURL:url delegate:[[self class] sharedManager]];
      }
      error:NULL];
     
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFWxManager appDelegateClassString])
      aspect_hookSelector:@selector(application:openURL:sourceApplication:annotation:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application, id url, id sourceApplication, id annotation){
-        NSLog(@"application:openURL:sourceApplication:annotation:===%@", url);
+        [[self class] log:[NSString stringWithFormat:@"application:openURL:sourceApplication:annotation:===%@", url]];
+        
          // Required
         return [WXApi handleOpenURL:url delegate:[[self class] sharedManager]];
      }
      error:NULL];
     
     /// NOTE: 9.0以后使用新API接口
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFWxManager appDelegateClassString])
      aspect_hookSelector:@selector(application:openURL:options:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application, id url, id options) {
-        NSLog(@"application:openURL:options:===%@", url);
+        [[self class] log:[NSString stringWithFormat:@"application:openURL:options:===%@", url]];
+        
         return  [WXApi handleOpenURL:url delegate:[[self class] sharedManager]];
     }
      error:NULL];
     
-    [NSClassFromString(@"AppDelegate")
+    [NSClassFromString([TFWxManager appDelegateClassString])
      aspect_hookSelector:@selector(application:continueUserActivity:restorationHandler:)
      withOptions:AspectPositionBefore
      usingBlock:^(id<AspectInfo> aspectInfo, id application, id userActivity, id restorationHandler) {
@@ -160,6 +178,12 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
     }
     
     return self;
+}
+
+/// 输出log
+/// @param message message
++ (void)log:(NSString *)message {
+    NSLog(@"[%@] 🤖 %@", [self class], message);
 }
 
 #pragma mark -
