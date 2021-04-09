@@ -156,24 +156,39 @@ enum TFWXScene {
 @interface TFWxManager : NSObject
 
 /**
- * 成功回调
+ * 消息发送成功回调
  */
-typedef void (^TFWxManagerSuccessBlock) (void);
+typedef void (^TFWxManagerSendMessageSuccessBlock) (void);
 
 /**
- * 失败回调
+ * 消息发送失败回调
  */
-typedef void (^TFWxManagerFailureBlock) (int errorCode, NSString *errorMessage);
+typedef void (^TFWxManagerSendMessageFailureBlock) (int errorCode, NSString *errorMessage);
 
 /**
- * 取消回调
+ * 消息发送取消回调
  */
-typedef void (^TFWxManagerCancelBlock) (void);
+typedef void (^TFWxManagerSendMessageCancelBlock) (void);
 
 /**
  * 授权回调
  */
 typedef void (^TFWxManagerAuthCodeCallbackBlock) (NSString *code);
+
+/**
+ * 支付成功回调
+ */
+typedef void (^TFWxManagerPaySuccessBlock) (void);
+
+/**
+ * 支付失败回调
+ */
+typedef void (^TFWxManagerPayFailureBlock) (int errorCode, NSString *errorMessage);
+
+/**
+ * 支付取消回调
+ */
+typedef void (^TFWxManagerPayCancelBlock) (void);
 
 + (instancetype)sharedManager;
 
@@ -186,9 +201,9 @@ typedef void (^TFWxManagerAuthCodeCallbackBlock) (NSString *code);
  *  @param cancelBlock  取消支付回调
  */
 + (void)pay:(TFWxPayReq*)data
-    success:(TFWxManagerSuccessBlock)successBlock
-    failure:(TFWxManagerFailureBlock)failureBlock
-     cancel:(TFWxManagerCancelBlock)cancelBlock;
+    success:(TFWxManagerPaySuccessBlock)successBlock
+    failure:(TFWxManagerPayFailureBlock)failureBlock
+     cancel:(TFWxManagerPayCancelBlock)cancelBlock;
 
 /// 分享到微信接口
 /// @param data req
@@ -196,9 +211,9 @@ typedef void (^TFWxManagerAuthCodeCallbackBlock) (NSString *code);
 /// @param failureBlock 失败回调
 /// @param cancelBlock 取消回调
 + (void)share:(TFWxShareReq*)data
-    success:(TFWxManagerSuccessBlock)successBlock
-    failure:(TFWxManagerFailureBlock)failureBlock
-     cancel:(TFWxManagerCancelBlock)cancelBlock;
+    success:(TFWxManagerSendMessageSuccessBlock)successBlock
+    failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+     cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock;
 
 /// 分享小程序信息到微信接口
 /// @param data req
@@ -206,9 +221,9 @@ typedef void (^TFWxManagerAuthCodeCallbackBlock) (NSString *code);
 /// @param failureBlock 失败回调
 /// @param cancelBlock 取消回调
 + (void)shareToMiniApp:(TFWxMiniAppReq*)data
-               success:(TFWxManagerSuccessBlock)successBlock
-               failure:(TFWxManagerFailureBlock)failureBlock
-                cancel:(TFWxManagerCancelBlock)cancelBlock;
+               success:(TFWxManagerSendMessageSuccessBlock)successBlock
+               failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+                cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock;
 
 /**
  * 向微信终端程序注册第三方应用，需要在每次启动第三方应用程序时调用。
@@ -224,9 +239,9 @@ typedef void (^TFWxManagerAuthCodeCallbackBlock) (NSString *code);
 /// @param failureBlock 失败回调
 /// @param cancelBlock 取消回调
 + (void)miniApp:(TFWxMiniAppReq*)data
-        success:(TFWxManagerSuccessBlock)successBlock
-        failure:(TFWxManagerFailureBlock)failureBlock
-         cancel:(TFWxManagerCancelBlock)cancelBlock;
+        success:(TFWxManagerSendMessageSuccessBlock)successBlock
+        failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+         cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock;
 
 /*! @brief 检查微信是否已被用户安装
  *
@@ -260,12 +275,8 @@ typedef void (^TFWxManagerAuthCodeCallbackBlock) (NSString *code);
 
 /// 发送权限申请
 /// @param req req
-/// @param successBlock 成功回调
-/// @param failureBlock 失败回调
-/// @param cancelBlock 取消回调
+/// @param callBackBlock 回调
 + (void)sendAuthReq:(TFWxAuthReq *)req
-            success:(TFWxManagerAuthCodeCallbackBlock)successBlock
-            failure:(TFWxManagerFailureBlock)failureBlock
-             cancel:(TFWxManagerCancelBlock)cancelBlock;
+      callBackBlock:(TFWxManagerAuthCodeCallbackBlock)callBackBlock;
 
 @end

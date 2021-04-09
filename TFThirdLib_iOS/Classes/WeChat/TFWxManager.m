@@ -36,10 +36,15 @@
 @end
 @implementation TFWxManager
 
-static const void *TFWxManagerSuccessBlockKey           = &TFWxManagerSuccessBlockKey;
-static const void *TFWxManagerFailureBlockKey           = &TFWxManagerFailureBlockKey;
-static const void *TFWxManagerCancelBlockKey            = &TFWxManagerCancelBlockKey;
-static const void *TFWxManagerAuthCodeCallbackBlockKey  = &TFWxManagerAuthCodeCallbackBlockKey;
+static const void *TFWxManagerSendMessageSuccessBlockKey    = &TFWxManagerSendMessageSuccessBlockKey;
+static const void *TFWxManagerSendMessageFailureBlockKey    = &TFWxManagerSendMessageFailureBlockKey;
+static const void *TFWxManagerSendMessageCancelBlockKey     = &TFWxManagerSendMessageCancelBlockKey;
+
+static const void *TFWxManagerPaySuccessBlockKey            = &TFWxManagerPaySuccessBlockKey;
+static const void *TFWxManagerPayFailureBlockKey            = &TFWxManagerPayFailureBlockKey;
+static const void *TFWxManagerPayCancelBlockKey             = &TFWxManagerPayCancelBlockKey;
+
+static const void *TFWxManagerAuthCodeCallbackBlockKey      = &TFWxManagerAuthCodeCallbackBlockKey;
 
 + (void)load {
     [super load];
@@ -192,8 +197,7 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
         switch (resp.errCode) {
             case WXSuccess:
             {
-                NSLog(@"分享成功");
-                TFWxManagerSuccessBlock block = self.successBlock;
+                TFWxManagerSendMessageSuccessBlock block = self.sendMessageSuccessBlock;
                 if (block) {
                     block();
                 }
@@ -202,8 +206,7 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
             }
             case WXErrCodeUserCancel:
             {
-                NSLog(@"分享取消");
-                TFWxManagerFailureBlock block = self.failureBlock;
+                TFWxManagerSendMessageFailureBlock block = self.sendMessageFailureBlock;
                 if (block) {
                     block(resp.errCode,resp.errStr);
                 }
@@ -212,8 +215,7 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
             }
             default:
             {
-                NSLog(@"分享失败，retcode=%d",resp.errCode);
-                TFWxManagerCancelBlock block = self.cancelBlock;
+                TFWxManagerSendMessageCancelBlock block = self.sendMessageCancelBlock;
                 if (block) {
                     block();
                 }
@@ -221,10 +223,6 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
                 break;
             }
         }
-    } else if([resp isKindOfClass:[PayResp class]]) {
-        PayResp *payResp = (PayResp *)resp;
-        
-        NSLog(@"%@", payResp);
     } else if([resp isKindOfClass:[SendAuthResp class]]) {
         SendAuthResp *sendAuthResp = (SendAuthResp *)resp;
         TFWxManagerAuthCodeCallbackBlock block = self.authCodeCallbackBlockBlock;
@@ -232,10 +230,95 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
             block(sendAuthResp.code);
         }
         NSLog(@"%@", sendAuthResp);
+    } else if ([resp isKindOfClass:[AddCardToWXCardPackageResp class]]) {
+//        if (_delegate
+//            && [_delegate respondsToSelector:@selector(managerDidRecvAddCardResponse:)]) {
+//
+//            [_delegate managerDidRecvAddCardResponse:addCardResp];
+//        }
+    } else if ([resp isKindOfClass:[WXChooseCardResp class]]) {
+//        if (_delegate
+//            && [_delegate respondsToSelector:@selector(managerDidRecvChooseCardResponse:)]) {
+//            WXChooseCardResp *chooseCardResp = (WXChooseCardResp *)resp;
+//            [_delegate managerDidRecvChooseCardResponse:chooseCardResp];
+//        }
+    } else if ([resp isKindOfClass:[WXChooseInvoiceResp class]]){
+//        if (_delegate
+//            && [_delegate respondsToSelector:@selector(managerDidRecvChooseInvoiceResponse:)]) {
+//            WXChooseInvoiceResp *chooseInvoiceResp = (WXChooseInvoiceResp *)resp;
+//            [_delegate managerDidRecvChooseInvoiceResponse:chooseInvoiceResp];
+//        }
+    } else if ([resp isKindOfClass:[WXSubscribeMsgResp class]]){
+//        if ([_delegate respondsToSelector:@selector(managerDidRecvSubscribeMsgResponse:)])
+//        {
+//            [_delegate managerDidRecvSubscribeMsgResponse:(WXSubscribeMsgResp *)resp];
+//        }
+    } else if ([resp isKindOfClass:[WXLaunchMiniProgramResp class]]){
+//        if ([_delegate respondsToSelector:@selector(managerDidRecvLaunchMiniProgram:)]) {
+//            [_delegate managerDidRecvLaunchMiniProgram:(WXLaunchMiniProgramResp *)resp];
+//        }
+    } else if([resp isKindOfClass:[WXInvoiceAuthInsertResp class]]){
+//        if ([_delegate respondsToSelector:@selector(managerDidRecvInvoiceAuthInsertResponse:)]) {
+//            [_delegate managerDidRecvInvoiceAuthInsertResponse:(WXInvoiceAuthInsertResp *) resp];
+//        }
+    } else if([resp isKindOfClass:[WXNontaxPayResp class]]){
+//        if ([_delegate respondsToSelector:@selector(managerDidRecvNonTaxpayResponse:)]) {
+//            [_delegate managerDidRecvNonTaxpayResponse:(WXNontaxPayResp *)resp];
+//        }
+    } else if ([resp isKindOfClass:[WXPayInsuranceResp class]]){
+//        if ([_delegate respondsToSelector:@selector(managerDidRecvPayInsuranceResponse:)]) {
+//            [_delegate managerDidRecvPayInsuranceResponse:(WXPayInsuranceResp *)resp];
+//        }
+    }  else if([resp isKindOfClass:[PayResp class]]) {
+        PayResp *payResp = (PayResp *)resp;
+        
+        NSLog(@"%@", payResp);
+        switch (resp.errCode) {
+            case WXSuccess:
+            {
+                TFWxManagerPaySuccessBlock block = self.paySuccessBlock;
+                if (block) {
+                    block();
+                }
+                
+                break;
+            }
+            case WXErrCodeUserCancel:
+            {
+                TFWxManagerPayFailureBlock block = self.payFailureBlock;
+                if (block) {
+                    block(resp.errCode,resp.errStr);
+                }
+                
+                break;
+            }
+            default:
+            {
+                TFWxManagerPayCancelBlock block = self.payCancelBlock;
+                if (block) {
+                    block();
+                }
+                
+                break;
+            }
+        }
     }
 }
 
 - (void)onReq:(BaseReq *)req {
+    if ([req isKindOfClass:[ShowMessageFromWXReq class]]) {
+//        if (_delegate
+//            && [_delegate respondsToSelector:@selector(managerDidRecvShowMessageReq:)]) {
+//            ShowMessageFromWXReq *showMessageReq = (ShowMessageFromWXReq *)req;
+//            [_delegate managerDidRecvShowMessageReq:showMessageReq];
+//        }
+    } else if ([req isKindOfClass:[LaunchFromWXReq class]]) {
+//        if (_delegate
+//            && [_delegate respondsToSelector:@selector(managerDidRecvLaunchFromWXReq:)]) {
+//            LaunchFromWXReq *launchReq = (LaunchFromWXReq *)req;
+//            [_delegate managerDidRecvLaunchFromWXReq:launchReq];
+//        }
+    }
     NSLog(@"req:%@", req);
 }
 
@@ -264,30 +347,30 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 }
 
 + (void)pay:(TFWxPayReq*)data
-    success:(TFWxManagerSuccessBlock)successBlock
-    failure:(TFWxManagerFailureBlock)failureBlock
-     cancel:(TFWxManagerCancelBlock)cancelBlock {
+    success:(TFWxManagerPaySuccessBlock)successBlock
+    failure:(TFWxManagerPayFailureBlock)failureBlock
+     cancel:(TFWxManagerPayCancelBlock)cancelBlock {
     [[[self class] sharedManager] pay:data success:successBlock failure:failureBlock cancel:cancelBlock];
 }
 
 + (void)share:(TFWxShareReq*)data
-      success:(TFWxManagerSuccessBlock)successBlock
-      failure:(TFWxManagerFailureBlock)failureBlock
-       cancel:(TFWxManagerCancelBlock)cancelBlock {
+      success:(TFWxManagerSendMessageSuccessBlock)successBlock
+      failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+       cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock {
     [[[self class] sharedManager] share:data success:successBlock failure:failureBlock cancel:cancelBlock];
 }
 
 + (void)shareToMiniApp:(TFWxMiniAppReq*)data
-               success:(TFWxManagerSuccessBlock)successBlock
-               failure:(TFWxManagerFailureBlock)failureBlock
-                cancel:(TFWxManagerCancelBlock)cancelBlock {
+               success:(TFWxManagerSendMessageSuccessBlock)successBlock
+               failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+                cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock {
     [[[self class] sharedManager] shareToMiniApp:data success:successBlock failure:failureBlock cancel:cancelBlock];
 }
 
 + (void)miniApp:(TFWxMiniAppReq*)data
-        success:(TFWxManagerSuccessBlock)successBlock
-        failure:(TFWxManagerFailureBlock)failureBlock
-         cancel:(TFWxManagerCancelBlock)cancelBlock {
+        success:(TFWxManagerSendMessageSuccessBlock)successBlock
+        failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+         cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock {
     [[[self class] sharedManager] miniApp:data success:successBlock failure:failureBlock cancel:cancelBlock];
 }
 
@@ -296,16 +379,14 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 }
 
 + (void)sendAuthReq:(TFWxAuthReq *)req
-            success:(TFWxManagerAuthCodeCallbackBlock)successBlock
-            failure:(TFWxManagerFailureBlock)failureBlock
-             cancel:(TFWxManagerCancelBlock)cancelBlock {
-    [[[self class] sharedManager] sendAuthReq:req success:successBlock failure:failureBlock cancel:cancelBlock];
+      callBackBlock:(TFWxManagerAuthCodeCallbackBlock)callBackBlock {
+    [[[self class] sharedManager] sendAuthReq:req callBackBlock:callBackBlock];
 }
 
 - (void)pay:(TFWxPayReq*)data
-    success:(TFWxManagerSuccessBlock)successBlock
-    failure:(TFWxManagerFailureBlock)failureBlock
-     cancel:(TFWxManagerCancelBlock)cancelBlock {
+    success:(TFWxManagerPaySuccessBlock)successBlock
+    failure:(TFWxManagerPayFailureBlock)failureBlock
+     cancel:(TFWxManagerPayCancelBlock)cancelBlock {
     //
     if (![WXApi isWXAppInstalled]||![WXApi isWXAppSupportApi]) {
         if (failureBlock) {
@@ -315,9 +396,9 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
         return;
     }
     
-    [self setSuccessBlock:successBlock];
-    [self setFailureBlock:failureBlock];
-    [self setCancelBlock:cancelBlock];
+    [self setPaySuccessBlock:successBlock];
+    [self setPayFailureBlock:failureBlock];
+    [self setPayCancelBlock:cancelBlock];
     
     PayReq *request   = [[PayReq alloc] init];
     request.sign = data.sign;
@@ -333,9 +414,9 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 }
 
 - (void)share:(TFWxShareReq*)data
-    success:(TFWxManagerSuccessBlock)successBlock
-    failure:(TFWxManagerFailureBlock)failureBlock
-     cancel:(TFWxManagerCancelBlock)cancelBlock {
+    success:(TFWxManagerSendMessageSuccessBlock)successBlock
+    failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+     cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock {
     //
     if (![WXApi isWXAppInstalled]||![WXApi isWXAppSupportApi]) {
         if (failureBlock) {
@@ -345,9 +426,9 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
         return;
     }
     
-    [self setSuccessBlock:successBlock];
-    [self setFailureBlock:failureBlock];
-    [self setCancelBlock:cancelBlock];
+    [self setSendMessageSuccessBlock:successBlock];
+    [self setSendMessageFailureBlock:failureBlock];
+    [self setSendMessageCancelBlock:cancelBlock];
 
     SendMessageToWXReq* req = [[SendMessageToWXReq alloc]init];
     req.scene=data.scene;
@@ -400,9 +481,9 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 }
 
 - (void)shareToMiniApp:(TFWxMiniAppReq*)data
-    success:(TFWxManagerSuccessBlock)successBlock
-    failure:(TFWxManagerFailureBlock)failureBlock
-     cancel:(TFWxManagerCancelBlock)cancelBlock {
+    success:(TFWxManagerSendMessageSuccessBlock)successBlock
+    failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+     cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock {
     //
     if (![WXApi isWXAppInstalled]||![WXApi isWXAppSupportApi]) {
         if (failureBlock) {
@@ -412,9 +493,9 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
         return;
     }
     
-    [self setSuccessBlock:successBlock];
-    [self setFailureBlock:failureBlock];
-    [self setCancelBlock:cancelBlock];
+    [self setSendMessageSuccessBlock:successBlock];
+    [self setSendMessageFailureBlock:failureBlock];
+    [self setSendMessageCancelBlock:cancelBlock];
 
     WXMiniProgramObject *object = [WXMiniProgramObject object];
     object.webpageUrl = data.webpageUrl;
@@ -443,9 +524,9 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 }
 
 - (void)miniApp:(TFWxMiniAppReq*)data
-        success:(TFWxManagerSuccessBlock)successBlock
-        failure:(TFWxManagerFailureBlock)failureBlock
-         cancel:(TFWxManagerCancelBlock)cancelBlock {
+        success:(TFWxManagerSendMessageSuccessBlock)successBlock
+        failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+         cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock {
     //
     if (![WXApi isWXAppInstalled]||![WXApi isWXAppSupportApi]) {
         if (failureBlock) {
@@ -455,9 +536,9 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
         return;
     }
     
-    [self setSuccessBlock:successBlock];
-    [self setFailureBlock:failureBlock];
-    [self setCancelBlock:cancelBlock];
+    [self setSendMessageSuccessBlock:successBlock];
+    [self setSendMessageFailureBlock:failureBlock];
+    [self setSendMessageCancelBlock:cancelBlock];
 
     WXLaunchMiniProgramReq *req = [WXLaunchMiniProgramReq object];
     
@@ -480,13 +561,9 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 }
 
 - (void)sendAuthReq:(TFWxAuthReq *)req
-            success:(TFWxManagerAuthCodeCallbackBlock)successBlock
-            failure:(TFWxManagerFailureBlock)failureBlock
-             cancel:(TFWxManagerCancelBlock)cancelBlock {
+      callBackBlock:(TFWxManagerAuthCodeCallbackBlock)callBackBlock {
     
-    [self setAuthCodeCallbackBlockBlock:successBlock];
-    [self setFailureBlock:failureBlock];
-    [self setCancelBlock:cancelBlock];
+    [self setAuthCodeCallbackBlockBlock:callBackBlock];
     
     SendAuthReq *sendAuthReq = [[SendAuthReq alloc] init];
     sendAuthReq.scope = req.scope;
@@ -499,28 +576,28 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 
 #pragma mark- Block setting/getting methods
 
-- (void)setSuccessBlock:(TFWxManagerSuccessBlock)block {
-    objc_setAssociatedObject(self, TFWxManagerSuccessBlockKey, block, OBJC_ASSOCIATION_COPY);
+- (void)setSendMessageSuccessBlock:(TFWxManagerSendMessageSuccessBlock)block {
+    objc_setAssociatedObject(self, TFWxManagerSendMessageSuccessBlockKey, block, OBJC_ASSOCIATION_COPY);
 }
 
-- (TFWxManagerSuccessBlock)successBlock {
-    return objc_getAssociatedObject(self, TFWxManagerSuccessBlockKey);
+- (TFWxManagerSendMessageSuccessBlock)sendMessageSuccessBlock {
+    return objc_getAssociatedObject(self, TFWxManagerSendMessageSuccessBlockKey);
 }
 
-- (void)setFailureBlock:(TFWxManagerFailureBlock)block {
-    objc_setAssociatedObject(self, TFWxManagerFailureBlockKey, block, OBJC_ASSOCIATION_COPY);
+- (void)setSendMessageFailureBlock:(TFWxManagerSendMessageFailureBlock)block {
+    objc_setAssociatedObject(self, TFWxManagerSendMessageFailureBlockKey, block, OBJC_ASSOCIATION_COPY);
 }
 
-- (TFWxManagerFailureBlock)failureBlock {
-    return objc_getAssociatedObject(self, TFWxManagerFailureBlockKey);
+- (TFWxManagerSendMessageFailureBlock)sendMessageFailureBlock {
+    return objc_getAssociatedObject(self, TFWxManagerSendMessageFailureBlockKey);
 }
 
-- (void)setCancelBlock:(TFWxManagerCancelBlock)block {
-    objc_setAssociatedObject(self, TFWxManagerCancelBlockKey, block, OBJC_ASSOCIATION_COPY);
+- (void)setSendMessageCancelBlock:(TFWxManagerSendMessageCancelBlock)block {
+    objc_setAssociatedObject(self, TFWxManagerSendMessageCancelBlockKey, block, OBJC_ASSOCIATION_COPY);
 }
 
-- (TFWxManagerCancelBlock)cancelBlock {
-    return objc_getAssociatedObject(self, TFWxManagerCancelBlockKey);
+- (TFWxManagerSendMessageCancelBlock)sendMessageCancelBlock {
+    return objc_getAssociatedObject(self, TFWxManagerSendMessageCancelBlockKey);
 }
 
 - (void)setAuthCodeCallbackBlockBlock:(TFWxManagerAuthCodeCallbackBlock)block {
@@ -529,6 +606,30 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 
 - (TFWxManagerAuthCodeCallbackBlock)authCodeCallbackBlockBlock {
     return objc_getAssociatedObject(self, TFWxManagerAuthCodeCallbackBlockKey);
+}
+
+- (void)setPaySuccessBlock:(TFWxManagerPaySuccessBlock)block {
+    objc_setAssociatedObject(self, TFWxManagerPaySuccessBlockKey, block, OBJC_ASSOCIATION_COPY);
+}
+
+- (TFWxManagerPaySuccessBlock)paySuccessBlock {
+    return objc_getAssociatedObject(self, TFWxManagerPaySuccessBlockKey);
+}
+
+- (void)setPayFailureBlock:(TFWxManagerPayFailureBlock)block {
+    objc_setAssociatedObject(self, TFWxManagerPayFailureBlockKey, block, OBJC_ASSOCIATION_COPY);
+}
+
+- (TFWxManagerPayFailureBlock)payFailureBlock {
+    return objc_getAssociatedObject(self, TFWxManagerPayFailureBlockKey);
+}
+
+- (void)setPayCancelBlock:(TFWxManagerPayCancelBlock)block {
+    objc_setAssociatedObject(self, TFWxManagerPayCancelBlockKey, block, OBJC_ASSOCIATION_COPY);
+}
+
+- (TFWxManagerPayCancelBlock)payCancelBlock {
+    return objc_getAssociatedObject(self, TFWxManagerPayCancelBlockKey);
 }
 
 #pragma mark - other
