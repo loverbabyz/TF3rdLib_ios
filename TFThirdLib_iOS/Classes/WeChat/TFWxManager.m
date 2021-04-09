@@ -185,43 +185,42 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 #pragma mark WXApiDelegate
 
 - (void)onResp:(BaseResp *)resp {
-    switch (resp.errCode) {
-        case WXSuccess:
-        {
-            NSLog(@"分享成功");
-            TFWxManagerSuccessBlock block = self.successBlock;
-            if (block) {
-                block();
-            }
-            
-            break;
-        }
-        case WXErrCodeUserCancel:
-        {
-            NSLog(@"分享取消");
-            TFWxManagerFailureBlock block = self.failureBlock;
-            if (block) {
-                block(resp.errCode,resp.errStr);
-            }
-            
-            break;
-        }
-        default:
-        {
-            NSLog(@"分享失败，retcode=%d",resp.errCode);
-            TFWxManagerCancelBlock block = self.cancelBlock;
-            if (block) {
-                block();
-            }
-            
-            break;
-        }
-    }
-
     if ([resp isKindOfClass:[SendMessageToWXResp class]]) {
         SendMessageToWXResp *messageResp = (SendMessageToWXResp *)resp;
         
         NSLog(@"%@", messageResp);
+        switch (resp.errCode) {
+            case WXSuccess:
+            {
+                NSLog(@"分享成功");
+                TFWxManagerSuccessBlock block = self.successBlock;
+                if (block) {
+                    block();
+                }
+                
+                break;
+            }
+            case WXErrCodeUserCancel:
+            {
+                NSLog(@"分享取消");
+                TFWxManagerFailureBlock block = self.failureBlock;
+                if (block) {
+                    block(resp.errCode,resp.errStr);
+                }
+                
+                break;
+            }
+            default:
+            {
+                NSLog(@"分享失败，retcode=%d",resp.errCode);
+                TFWxManagerCancelBlock block = self.cancelBlock;
+                if (block) {
+                    block();
+                }
+                
+                break;
+            }
+        }
     } else if([resp isKindOfClass:[PayResp class]]) {
         PayResp *payResp = (PayResp *)resp;
         
