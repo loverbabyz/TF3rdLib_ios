@@ -23,9 +23,9 @@
  *  @param cancelBlock  取消分享回调
  */
 + (void)share:(TFWxShareReq*)data
-    success:(TFWxManagerSuccessBlock)successBlock
-    failure:(TFWxManagerFailureBlock)failureBlock
-     cancel:(TFWxManagerCancelBlock)cancelBlock;
+    success:(TFWxManagerSendMessageSuccessBlock)successBlock
+    failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+     cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock;
 
 /**
  *  微信分享接口
@@ -36,9 +36,9 @@
  *  @param cancelBlock  取消分享回调
  */
 + (void)shareToMiniApp:(TFWxMiniAppReq*)data
-               success:(TFWxManagerSuccessBlock)successBlock
-               failure:(TFWxManagerFailureBlock)failureBlock
-                cancel:(TFWxManagerCancelBlock)cancelBlock;
+               success:(TFWxManagerSendMessageSuccessBlock)successBlock
+               failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+                cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock;
 
 @end
 

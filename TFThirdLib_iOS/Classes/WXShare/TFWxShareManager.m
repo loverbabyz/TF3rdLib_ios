@@ -11,17 +11,17 @@
 @implementation TFWxShareManager
 
 + (void)share:(TFWxShareReq*)data
-    success:(TFWxManagerSuccessBlock)successBlock
-    failure:(TFWxManagerFailureBlock)failureBlock
-     cancel:(TFWxManagerCancelBlock)cancelBlock
+    success:(TFWxManagerSendMessageSuccessBlock)successBlock
+    failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+     cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock
 {
     [TFWxManager share:data success:successBlock failure:failureBlock cancel:cancelBlock];
 }
 
 + (void)shareToMiniApp:(TFWxMiniAppReq*)data
-               success:(TFWxManagerSuccessBlock)successBlock
-               failure:(TFWxManagerFailureBlock)failureBlock
-                cancel:(TFWxManagerCancelBlock)cancelBlock {
+               success:(TFWxManagerSendMessageSuccessBlock)successBlock
+               failure:(TFWxManagerSendMessageFailureBlock)failureBlock
+                cancel:(TFWxManagerSendMessageCancelBlock)cancelBlock {
     [TFWxManager shareToMiniApp:data success:successBlock failure:failureBlock cancel:cancelBlock];
 }
 
