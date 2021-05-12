@@ -231,44 +231,21 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
         }
         NSLog(@"%@", sendAuthResp);
     } else if ([resp isKindOfClass:[AddCardToWXCardPackageResp class]]) {
-//        if (_delegate
-//            && [_delegate respondsToSelector:@selector(managerDidRecvAddCardResponse:)]) {
-//
-//            [_delegate managerDidRecvAddCardResponse:addCardResp];
-//        }
+        NSLog(@"%@", resp);
     } else if ([resp isKindOfClass:[WXChooseCardResp class]]) {
-//        if (_delegate
-//            && [_delegate respondsToSelector:@selector(managerDidRecvChooseCardResponse:)]) {
-//            WXChooseCardResp *chooseCardResp = (WXChooseCardResp *)resp;
-//            [_delegate managerDidRecvChooseCardResponse:chooseCardResp];
-//        }
+        NSLog(@"%@", resp);
     } else if ([resp isKindOfClass:[WXChooseInvoiceResp class]]){
-//        if (_delegate
-//            && [_delegate respondsToSelector:@selector(managerDidRecvChooseInvoiceResponse:)]) {
-//            WXChooseInvoiceResp *chooseInvoiceResp = (WXChooseInvoiceResp *)resp;
-//            [_delegate managerDidRecvChooseInvoiceResponse:chooseInvoiceResp];
-//        }
+        NSLog(@"%@", resp);
     } else if ([resp isKindOfClass:[WXSubscribeMsgResp class]]){
-//        if ([_delegate respondsToSelector:@selector(managerDidRecvSubscribeMsgResponse:)])
-//        {
-//            [_delegate managerDidRecvSubscribeMsgResponse:(WXSubscribeMsgResp *)resp];
-//        }
+        NSLog(@"%@", resp);
     } else if ([resp isKindOfClass:[WXLaunchMiniProgramResp class]]){
-//        if ([_delegate respondsToSelector:@selector(managerDidRecvLaunchMiniProgram:)]) {
-//            [_delegate managerDidRecvLaunchMiniProgram:(WXLaunchMiniProgramResp *)resp];
-//        }
+        NSLog(@"%@", resp);
     } else if([resp isKindOfClass:[WXInvoiceAuthInsertResp class]]){
-//        if ([_delegate respondsToSelector:@selector(managerDidRecvInvoiceAuthInsertResponse:)]) {
-//            [_delegate managerDidRecvInvoiceAuthInsertResponse:(WXInvoiceAuthInsertResp *) resp];
-//        }
+        NSLog(@"%@", resp);
     } else if([resp isKindOfClass:[WXNontaxPayResp class]]){
-//        if ([_delegate respondsToSelector:@selector(managerDidRecvNonTaxpayResponse:)]) {
-//            [_delegate managerDidRecvNonTaxpayResponse:(WXNontaxPayResp *)resp];
-//        }
+        NSLog(@"%@", resp);
     } else if ([resp isKindOfClass:[WXPayInsuranceResp class]]){
-//        if ([_delegate respondsToSelector:@selector(managerDidRecvPayInsuranceResponse:)]) {
-//            [_delegate managerDidRecvPayInsuranceResponse:(WXPayInsuranceResp *)resp];
-//        }
+        NSLog(@"%@", resp);
     }  else if([resp isKindOfClass:[PayResp class]]) {
         PayResp *payResp = (PayResp *)resp;
         
@@ -285,18 +262,18 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
             }
             case WXErrCodeUserCancel:
             {
-                TFWxManagerPayFailureBlock block = self.payFailureBlock;
+                TFWxManagerPayCancelBlock block = self.payCancelBlock;
                 if (block) {
-                    block(resp.errCode,resp.errStr);
+                    block();
                 }
                 
                 break;
             }
             default:
             {
-                TFWxManagerPayCancelBlock block = self.payCancelBlock;
+                TFWxManagerPayFailureBlock block = self.payFailureBlock;
                 if (block) {
-                    block();
+                    block(resp.errCode, resp.errStr);
                 }
                 
                 break;

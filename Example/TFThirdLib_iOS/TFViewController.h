@@ -11,3 +11,8 @@
 @interface TFViewController : UIViewController
 
 @end
+@interface NSString (ext)
+
+- (BOOL)containsString:(NSString *)string;
+
+@end
