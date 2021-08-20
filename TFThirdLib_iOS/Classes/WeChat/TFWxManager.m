@@ -8,7 +8,7 @@
 //
 
 #import "TFWxManager.h"
-#import "Aspects.h"
+#import <Aspects/Aspects.h>
 #import <objc/runtime.h>
 #import "TFThirdLib.h"
 
