@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TFThirdLib_iOS'
-  s.version          = '1.0.5'
+  s.version          = '1.0.6'
   s.summary          = '3rd lib for Treasure framework.'
 
 # This description is used to generate tags and improve search results.
