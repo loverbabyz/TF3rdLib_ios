@@ -1,0 +1,31 @@
+Example/Pods/Headers/Private/Aspects/Aspects.h
+Example/Pods/Headers/Private/TFThirdLib_iOS/TFAdaPayManager.h
+Example/Pods/Headers/Private/TFThirdLib_iOS/TFBuglyManager.h
+Example/Pods/Headers/Private/TFThirdLib_iOS/TFThirdLib.h
+Example/Pods/Headers/Private/TFThirdLib_iOS/TFUMengSocialManager.h
+Example/Pods/Headers/Private/TFThirdLib_iOS/TFWxManager.h
+Example/Pods/Headers/Private/TFThirdLib_iOS/TFWxShareManager.h
+Example/Pods/Headers/Private/TFThirdLib_iOS/WXApi.h
+Example/Pods/Headers/Private/TFThirdLib_iOS/WXApiObject.h
+Example/Pods/Headers/Private/TFThirdLib_iOS/WechatAuthSDK.h
+Example/Pods/Local Podspecs/TFThirdLib_iOS.podspec.json
+Example/Pods/Manifest.lock
+Example/Pods/Pods.xcodeproj/project.pbxproj
+Example/Pods/Pods.xcodeproj/xcuserdata/xiaofei.xcuserdatad/xcschemes/Pods-TFThirdLib_iOS_Example.xcscheme
+Example/Pods/Pods.xcodeproj/xcuserdata/xiaofei.xcuserdatad/xcschemes/Pods-TFThirdLib_iOS_Tests.xcscheme
+Example/Pods/Pods.xcodeproj/xcuserdata/xiaofei.xcuserdatad/xcschemes/xcschememanagement.plist
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Example/Pods-TFThirdLib_iOS_Example-acknowledgements.markdown
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Example/Pods-TFThirdLib_iOS_Example-acknowledgements.plist
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Example/Pods-TFThirdLib_iOS_Example-dummy.m
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Example/Pods-TFThirdLib_iOS_Example-frameworks.sh
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Example/Pods-TFThirdLib_iOS_Example-resources.sh
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Example/Pods-TFThirdLib_iOS_Example.debug.xcconfig
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Example/Pods-TFThirdLib_iOS_Example.release.xcconfig
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Tests/Pods-TFThirdLib_iOS_Tests-acknowledgements.markdown
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Tests/Pods-TFThirdLib_iOS_Tests-acknowledgements.plist
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Tests/Pods-TFThirdLib_iOS_Tests-dummy.m
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Tests/Pods-TFThirdLib_iOS_Tests.debug.xcconfig
+Example/Pods/Target Support Files/Pods-TFThirdLib_iOS_Tests/Pods-TFThirdLib_iOS_Tests.release.xcconfig
+Example/TFThirdLib_iOS.xcworkspace/contents.xcworkspacedata
+Example/TFThirdLib_iOS.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+Example/TFThirdLib_iOS.xcworkspace/xcuserdata/xiaofei.xcuserdatad/UserInterfaceState.xcuserstate

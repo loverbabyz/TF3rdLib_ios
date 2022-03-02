@@ -150,6 +150,32 @@ enum TFWXScene {
 
 @end
 
+/*! @brief WXOpenBusinessViewReq对象, 可实现第三方通知微信启动，打开业务页面
+ *
+ * @note 返回的WXOpenBusinessViewReq对象是自动释放的
+ */
+@interface TFWXOpenBusinessViewReq : NSObject
+
+/** 业务类型
+ */
+@property (nonatomic, copy) NSString *businessType;
+
+/** 业务参数
+ */
+@property (nonatomic, copy, nullable) NSString *query;
+
+/** ext信息
+ * @note 选填，json格式
+ */
+@property (nonatomic, copy, nullable) NSString *extInfo;
+
+/** extData数据
+ * @note
+ */
+@property (nonatomic, strong, nullable) NSData *extData;
+
+@end
+
 /**
  *  微信支付管理类
  */
@@ -189,6 +215,21 @@ typedef void (^TFWxManagerPayFailureBlock) (int errorCode, NSString *errorMessag
  * 支付取消回调
  */
 typedef void (^TFWxManagerPayCancelBlock) (void);
+
+/**
+ * 支付分-授权服务成功回调
+ */
+typedef void (^TFWxManagerOpenBusinessViewSuccessBlock) (void);
+
+/**
+ * 支付分-授权服务失败回调
+ */
+typedef void (^TFWxManagerOpenBusinessViewFailureBlock) (int errorCode, NSString *errorMessage);
+
+/**
+ * 支付分-授权服务取消回调
+ */
+typedef void (^TFWxManagerOpenBusinessViewCancelBlock) (void);
 
 + (instancetype)sharedManager;
 
@@ -278,5 +319,13 @@ typedef void (^TFWxManagerPayCancelBlock) (void);
 /// @param callBackBlock 回调
 + (void)sendAuthReq:(TFWxAuthReq *)req
       callBackBlock:(TFWxManagerAuthCodeCallbackBlock)callBackBlock;
+
+/// OpenBusinessViewReq对象, 可实现第三方通知微信启动，打开业务页面
+/// @param req req
+/// @param callBackBlock 回调
++ (void)openBusinessViewReq:(TFWXOpenBusinessViewReq *)req
+                    success:(TFWxManagerOpenBusinessViewSuccessBlock)successBlock
+                    failure:(TFWxManagerOpenBusinessViewFailureBlock)failureBlock
+                     cancel:(TFWxManagerOpenBusinessViewCancelBlock)cancelBlock;
 
 @end

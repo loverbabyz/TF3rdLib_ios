@@ -31,20 +31,28 @@
 
 @end
 
+@implementation TFWXOpenBusinessViewReq
+
+@end
+
 @interface TFWxManager()<WXApiDelegate>
 
 @end
 @implementation TFWxManager
 
-static const void *TFWxManagerSendMessageSuccessBlockKey    = &TFWxManagerSendMessageSuccessBlockKey;
-static const void *TFWxManagerSendMessageFailureBlockKey    = &TFWxManagerSendMessageFailureBlockKey;
-static const void *TFWxManagerSendMessageCancelBlockKey     = &TFWxManagerSendMessageCancelBlockKey;
+static const void *TFWxManagerSendMessageSuccessBlockKey        = &TFWxManagerSendMessageSuccessBlockKey;
+static const void *TFWxManagerSendMessageFailureBlockKey        = &TFWxManagerSendMessageFailureBlockKey;
+static const void *TFWxManagerSendMessageCancelBlockKey         = &TFWxManagerSendMessageCancelBlockKey;
 
-static const void *TFWxManagerPaySuccessBlockKey            = &TFWxManagerPaySuccessBlockKey;
-static const void *TFWxManagerPayFailureBlockKey            = &TFWxManagerPayFailureBlockKey;
-static const void *TFWxManagerPayCancelBlockKey             = &TFWxManagerPayCancelBlockKey;
+static const void *TFWxManagerPaySuccessBlockKey                = &TFWxManagerPaySuccessBlockKey;
+static const void *TFWxManagerPayFailureBlockKey                = &TFWxManagerPayFailureBlockKey;
+static const void *TFWxManagerPayCancelBlockKey                 = &TFWxManagerPayCancelBlockKey;
 
-static const void *TFWxManagerAuthCodeCallbackBlockKey      = &TFWxManagerAuthCodeCallbackBlockKey;
+static const void *TFWxManagerAuthCodeCallbackBlockKey          = &TFWxManagerAuthCodeCallbackBlockKey;
+
+static const void *TFWxManagerOpenBusinessViewSuccessBlockKey   = &TFWxManagerOpenBusinessViewSuccessBlockKey;
+static const void *TFWxManagerOpenBusinessViewFailureBlockKey   = &TFWxManagerOpenBusinessViewFailureBlockKey;
+static const void *TFWxManagerOpenBusinessViewCancelBlockKey    = &TFWxManagerOpenBusinessViewCancelBlockKey;
 
 + (void)load {
     [super load];
@@ -280,6 +288,40 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
             }
         }
     }
+    else if ([resp isKindOfClass:[WXOpenBusinessViewReq class]]) {
+        WXOpenBusinessViewReq *busResp = (WXOpenBusinessViewReq *)resp;
+        
+        NSLog(@"%@", busResp);
+        switch (resp.errCode) {
+            case WXSuccess:
+            {
+                TFWxManagerOpenBusinessViewSuccessBlock block = self.openBusinessViewSuccessBlock;
+                if (block) {
+                    block();
+                }
+                
+                break;
+            }
+            case WXErrCodeUserCancel:
+            {
+                TFWxManagerOpenBusinessViewCancelBlock block = self.openBusinessViewCancelBlock;
+                if (block) {
+                    block();
+                }
+                
+                break;
+            }
+            default:
+            {
+                TFWxManagerOpenBusinessViewFailureBlock block = self.openBusinessViewFailureBlock;
+                if (block) {
+                    block(resp.errCode, resp.errStr);
+                }
+                
+                break;
+            }
+        }
+    }
 }
 
 - (void)onReq:(BaseReq *)req {
@@ -358,6 +400,13 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 + (void)sendAuthReq:(TFWxAuthReq *)req
       callBackBlock:(TFWxManagerAuthCodeCallbackBlock)callBackBlock {
     [[[self class] sharedManager] sendAuthReq:req callBackBlock:callBackBlock];
+}
+
++ (void)openBusinessViewReq: (TFWXOpenBusinessViewReq *)req
+                    success:(TFWxManagerOpenBusinessViewSuccessBlock)successBlock
+                    failure:(TFWxManagerOpenBusinessViewFailureBlock)failureBlock
+                     cancel:(TFWxManagerOpenBusinessViewCancelBlock)cancelBlock {
+    [[[self class] sharedManager] openBusinessViewReq:req success:successBlock failure:failureBlock cancel:cancelBlock];
 }
 
 - (void)pay:(TFWxPayReq*)data
@@ -551,6 +600,31 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
     }];
 }
 
+- (void)openBusinessViewReq:(TFWXOpenBusinessViewReq *)req
+                    success:(TFWxManagerOpenBusinessViewSuccessBlock)successBlock
+                    failure:(TFWxManagerOpenBusinessViewFailureBlock)failureBlock
+                     cancel:(TFWxManagerOpenBusinessViewCancelBlock)cancelBlock {
+    [self setOpenBusinessViewSuccessBlock:successBlock];
+    [self setOpenBusinessViewFailureBlock:failureBlock];
+    [self setOpenBusinessViewCancelBlock:cancelBlock];
+    
+    WXOpenBusinessViewReq *openBusinessViewReq = [WXOpenBusinessViewReq object];
+    openBusinessViewReq.businessType = req.businessType;
+    openBusinessViewReq.query = req.query;
+    openBusinessViewReq.extInfo = req.extInfo;
+    openBusinessViewReq.extData = req.extData;
+    
+    /*
+    req.businessType = @"wxpayScoreEnable";
+    req.query = @"mch_id=1230000109&service_id=88888888000011&out_request_no=1234323JKHDFE1243252&timestamp=1530097563&nonce_str=zyx53Nkey8o4bHpxTQvd8m7e92nG5mG2&sign_type=HMAC-SHA256&sign=029B52F67573D7E3BE74904BF9AEA";
+    req.extInfo = @"{\"miniProgramType\":0}";
+    */
+    
+    [WXApi sendReq:openBusinessViewReq completion:^(BOOL success) {
+            
+    }];
+}
+
 #pragma mark- Block setting/getting methods
 
 - (void)setSendMessageSuccessBlock:(TFWxManagerSendMessageSuccessBlock)block {
@@ -607,6 +681,30 @@ BOOL dynamicMethod2_tfwxpay(id _self, SEL cmd,UIApplication *application ,NSURL 
 
 - (TFWxManagerPayCancelBlock)payCancelBlock {
     return objc_getAssociatedObject(self, TFWxManagerPayCancelBlockKey);
+}
+
+- (void)setOpenBusinessViewSuccessBlock:(TFWxManagerOpenBusinessViewSuccessBlock)block {
+    objc_setAssociatedObject(self, TFWxManagerOpenBusinessViewSuccessBlockKey, block, OBJC_ASSOCIATION_COPY);
+}
+
+- (TFWxManagerOpenBusinessViewSuccessBlock)openBusinessViewSuccessBlock {
+    return objc_getAssociatedObject(self, TFWxManagerOpenBusinessViewSuccessBlockKey);
+}
+
+- (void)setOpenBusinessViewFailureBlock:(TFWxManagerOpenBusinessViewFailureBlock)block {
+    objc_setAssociatedObject(self, TFWxManagerOpenBusinessViewFailureBlockKey, block, OBJC_ASSOCIATION_COPY);
+}
+
+- (TFWxManagerOpenBusinessViewFailureBlock)openBusinessViewFailureBlock {
+    return objc_getAssociatedObject(self, TFWxManagerOpenBusinessViewFailureBlockKey);
+}
+
+- (void)setOpenBusinessViewCancelBlock:(TFWxManagerOpenBusinessViewCancelBlock)block {
+    objc_setAssociatedObject(self, TFWxManagerOpenBusinessViewCancelBlockKey, block, OBJC_ASSOCIATION_COPY);
+}
+
+- (TFWxManagerOpenBusinessViewCancelBlock)openBusinessViewCancelBlock {
+    return objc_getAssociatedObject(self, TFWxManagerOpenBusinessViewCancelBlockKey);
 }
 
 #pragma mark - other
